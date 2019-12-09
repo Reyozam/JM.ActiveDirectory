@@ -1,5 +1,23 @@
-﻿#Requires -Version 3.0 -Modules ActiveDirectory
-function Compare-JMADGroup {
+﻿###############################################################################################################
+# Language     :  PowerShell 5.0
+# Filename     :  Get-RunInfo.ps1
+# Autor        :  Julien Mazoyer
+# Description  :  Compare Group Membership for multiple Users
+###############################################################################################################
+
+<#
+    .SYNOPSIS
+    Compare Group Membership for multiple Users
+
+    .DESCRIPTION
+    Compare Group Membership for multiple Users
+
+    .EXAMPLE
+    PS> Compare-ADGroupMembership user1,user2,user3
+
+
+#>
+function Compare-ADGroupMembership {
 
     <#
     #>

@@ -1,10 +1,10 @@
-﻿function Get-ADFSMORoles 
+﻿function Get-FSMORoles 
 {
     param (
         [string]$Domain = $env:USERDNSDOMAIN
     )
 
-    $DCs = Get-ADDomainController -Filter * -Server $Domain | Select Name,OperatingSystem,IPv4Address
+    $DCs = Get-ADDomainController -Filter * -Server $Domain | Select-Object Name,OperatingSystem,IPv4Address
 
     $DomainRoles = Get-ADDomain -Server $Domain | Select-Object InfrastructureMaster, RIDMaster, PDCEmulator
     $ForestRoles = Get-ADForest -Server $Domain | Select-Object DomainNamingMaster, SchemaMaster

@@ -15,7 +15,7 @@
     .EXAMPLE
     PS C:\> Get-UserGroupMembership "UserSamAccountName"
 #>
-function Get-UserGroupMembership
+function Get-ADUserGroupMembership
 {
 
     Param (

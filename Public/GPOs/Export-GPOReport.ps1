@@ -15,7 +15,7 @@
     .EXAMPLE
     PS C:\> Export-DomainGPOs -OutputDirectory C:\TEMP\ -Verbose
 #>
-Function Export-DomainGPOs
+Function Export-GPOReport
 {
 
 

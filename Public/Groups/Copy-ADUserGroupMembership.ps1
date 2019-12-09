@@ -1,4 +1,4 @@
-﻿function Copy-UserGroupMembership {
+﻿function Copy-ADUserGroupMembership {
     [CmdletBinding()]
     param (
         [String]$SourceUser,

@@ -17,6 +17,10 @@
 
 
 #>
+<<<<<<< HEAD:Public/Groups/Compare-ADGroupMembership.ps1
+=======
+#Requires -Version 3.0 -Modules ActiveDirectory
+>>>>>>> 0cd883132182403e8026690236b739818bd11885:Public/Compare-JMADGroup.ps1
 function Compare-ADGroupMembership {
 
     <#

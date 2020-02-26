@@ -20,13 +20,12 @@
             {
                 foreach ($_ in $ProcessErrors)
                 {
-                    Write-Warning -Message "Get-WinADForestReplicationPartnerMetaData - Error on server $($_.Exception.ServerName): $($_.Exception.Message)"
+                    Write-Warning -Message "Error on server $($_.Exception.ServerName): $($_.Exception.Message)"
                 }
             }
             foreach ($_ in $Replication)
             {
                 $ServerPartner = (Resolve-DnsName -Name $_.PartnerAddress -Verbose:$false -ErrorAction SilentlyContinue)
-                $ServerInitiating = (Resolve-DnsName -Name $_.Server -Verbose:$false -ErrorAction SilentlyContinue)
                 $ReplicationObject = [ordered] @{
                     Server                         = $_.Server
                     ServerPartner                  = $ServerPartner.NameHost

@@ -1,79 +1,69 @@
-﻿function Wait-ADReplication {
-    [cmdletbinding()]
-    param(
-        [Parameter(Mandatory, ParameterSetName="UPN")]
-        [string]$UPN,
-
-        [Parameter(Mandatory, ParameterSetName="DistinguishedName")]
-        [string]$DistinguishedName,
-
-        [Parameter(Mandatory, ParameterSetName="SAMAccountName")]
-        [string]$SAMAccountName,
-
-        [Parameter(Mandatory, ParameterSetName="GPOGuid")]
-        [string]$GPOGuid,
+﻿function Wait-ADReplication
+{
+    <#
+.SYNOPSIS
+    Short description
+.DESCRIPTION
+    Long description
+.EXAMPLE
+    PS C:\> <example usage>
+    Explanation of what the example does
+.INPUTS
+    Inputs (if any)
+.OUTPUTS
+    Output (if any)
+.NOTES
+    General notes
+#>
+    [CmdletBinding()]
+    param (
 
         [Parameter(Mandatory)]
-        [string]$DomainName
+        [string]
+        $SamAccountName,
+
+        [Parameter()]
+        [string]
+        $Domain = $env:USERDNSDOMAIN
     )
 
-    $dcs = Get-ADDomainController -Server $DomainName -Filter '*' -ErrorAction 'Stop'
+    
+    [psobject]$DCs = Get-ADDomainController -Server $Domain -Filter * | Select-Object Name, Hostname
+    $StartTime = [DateTime]::Now
+    $Output = [System.Collections.ArrayList]::new()
 
-    switch ($PsCmdlet.ParameterSetName) 
+    do 
     {
-        UPN {Write-Host "Search for $($PsCmdlet.ParameterSetName) : $UPN"  }
-        DistinguishedName {Write-Host "Search for $($PsCmdlet.ParameterSetName) : $DistinguishedName" }
-        SAMAccountName {Write-Host "Search for $($PsCmdlet.ParameterSetName) : $SAMAccountName" }
-        GPOGuid {Write-Host "Search for $($PsCmdlet.ParameterSetName) : $GPOGuid" }
-    }
+        foreach ($DC in $DCs) 
+        {
+            Write-Host "Search for [$SamAccountName] on $($DC.Name) `t" -NoNewline
+            $Search = Get-ADObject -Filter { Name -eq $SamAccountName -or SamAccountName -eq $SamAccountName } -ErrorAction SilentlyContinue -Properties whencreated, whenchanged
 
-    foreach ($dc in $dcs) {
-        $adobjectFound = $false
+            if ($Search)
+            {
+                Write-Host "FOUND in $(([DateTime]::Now - $startTime).Seconds) seconds !" -ForegroundColor Green
 
-        $startTime = [DateTime]::Now
-        Write-Verbose "Waiting for AD replication on $($dc.Hostname)..."
-        for ($i = 0; $i -lt 90; $i++) {
-            $adobject = $null
-            if ($UPN) {
-                if ($i -eq 0) {
-                    Write-Verbose "UPN to find: $UPN"
-                }
-                $adobject = Get-ADObject -Server $dc.HostName -LDAPFilter "(userPrincipalName=$UPN)"
-            }
-            elseif ($DistinguishedName) {
-                if ($i -eq 0) {
-                    Write-Host "DistinguishedName to find: $DistinguishedName"
-                }
-                $adobject = Get-ADObject -Server $dc.HostName -LDAPFilter "(distinguishedName=$DistinguishedName)"
-            }
-            elseif ($GPOGuid) {
-                if ($i -eq 0) {
-                    Write-Host "GPOGuid to find: $GPOGuid"
-                }
-                $adobject = Get-ADObject -Server $dc.HostName -LDAPFilter "(name={$GPOGuid})"
-            }
-            else {
-                if ($i -eq 0) {
-                    Write-Host "SAMAccountName to find: $SAMAccountName"
-                }
-                $adobject = Get-ADObject -Server $dc.HostName -LDAPFilter "(sAMAccountName=$SAMAccountName)"
-            }
+                $DCs = $DCS | Where-Object { $_.Name -ne $DC.Name }
 
-            if ($adobject -ne $null) {
-                Write-Host ("Object found on $($dc.Hostname). Replication took {0:N0} seconds." -f ([DateTime]::Now - $startTime).TotalSeconds) -ForegroundColor Green
-                $adobjectFound = $true
-                break
+                $Output.Add([PSCustomObject]@{
+                        SAM        = $SamAccountName
+                        DC         = $DC.Name
+                        CreatedOn  = $Search.WhenCreated
+                        ModifiedOn = $Search.WhenChanged
+
+                    }) | Out-Null
             }
-            else {
-                if ( $i -gt 0 -and ($i % 10) -eq 0) {
-                    Write-Host ("Object not found yet. Waited for {0:N0} seconds..." -f ([DateTime]::Now - $startTime).TotalSeconds) -ForegroundColor DarkYellow
-                }
-                Start-Sleep 1
+            else
+            {
+                Write-Host "NOT FOUND !" -ForegroundColor DarkYellow 
             }
         }
+    
 
-        if (-not $adobjectFound) {
-            Write-Error "Object was never found on $($dc.HostName)" -ErrorAction 'Stop'
-        }
-    }
+    } until ($DCs.Count -eq 0)
+   
+
+    Write-Output $Output
+
 }
+    

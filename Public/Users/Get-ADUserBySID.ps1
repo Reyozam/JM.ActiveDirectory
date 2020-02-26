@@ -1,23 +1,4 @@
-﻿###############################################################################################################
-# Language     :  PowerShell 5.0
-# Filename     :  Get-RunInfo.ps1
-# Autor        :  Julien Mazoyer
-# Description  :  Identify User from a SID
-###############################################################################################################
-
-<#
-    .SYNOPSIS
-    Identify User from a SID
-
-    .DESCRIPTION
-    Identify User from a SID
-
-    .EXAMPLE
-    PS> Get-ADUserBySID S-1-5-21-936649360-670464512-2652903633-16571
-
-#>
-
-function Get-ADUserBySID
+﻿function Get-ADUserBySID
 {
     <#
     .SYNOPSIS

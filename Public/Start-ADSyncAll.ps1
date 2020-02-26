@@ -1,6 +1,6 @@
 ###############################################################################################################
 # Language     :  PowerShell 4.0
-# Filename     :  Get-GpResult.ps1
+# Filename     :  
 # Autor        :  Julien Mazoyer
 # Description  :  Launch All Controllers Replication
 ###############################################################################################################
@@ -16,7 +16,7 @@
     PS C:\>Start-AllDCReplication
 #>
 
-function Start-AllDCReplication
+function Start-ADSyncAll
 {
 
     (Get-ADDomainController -Filter *).Name | ForEach-Object { 
@@ -25,5 +25,5 @@ function Start-AllDCReplication
     
     Start-Sleep 10 
     
-    Get-ADReplicationPartnerMetadata -Target "$env:userdnsdomain" -Scope Domain | Select-Object Server, LastReplicationSuccess
+    Get-ADReplicationPartnerMetadata -Target $env:USERDNSDOMAIN -Scope Domain | Select-Object Server, LastReplicationSuccess
 }

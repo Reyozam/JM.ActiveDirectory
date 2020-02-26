@@ -17,8 +17,6 @@
 #>
 Function Export-GPOReport
 {
-
-
     [CmdletBinding()]
     Param (
         [Parameter(Mandatory = $true)][String]$OutputDirectory,

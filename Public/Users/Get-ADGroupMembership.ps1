@@ -15,7 +15,7 @@
     .EXAMPLE
     PS C:\> Get-UserGroupMembership "UserSamAccountName"
 #>
-function Get-ADUserGroupMembership
+function Get-ADGroupMembership
 {
 
     Param (
@@ -43,7 +43,6 @@ function Get-ADUserGroupMembership
             {        
                 [PSCustomObject]@{
                     Group             = $Group.Name
-                    DistinguishedName = $Group.DistinguishedName
                     GroupCategory     = $Group.GroupCategory
                     GroupScope        = $Group.GroupScope
                 }  

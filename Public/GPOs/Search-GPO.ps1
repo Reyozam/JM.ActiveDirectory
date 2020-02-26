@@ -27,7 +27,7 @@ function Search-GPO
 {
     [CmdletBinding()]
     param (
-        [Parameter(ParameterSetName = "Disabled")][switch]$Disabled,
+        [Parameter(ParameterSetName = "Disabled")][ValidateSet("AllSettings","Computer","User")][string[]]$Disabled,
         [Parameter(ParameterSetName = "Empty")][switch]$Empty,
         [Parameter(ParameterSetName = "Unlinked")][switch]$Unlinked
     )
@@ -49,7 +49,7 @@ function Search-GPO
         {
             try
             {
-                $GPOs = Get-GPO -All  
+                $GPOs = Get-GPO -All | Where-Object {($_.GpoStatus -ne "AllSettingsEnabled") -AND ($_.GpoStatus -match $($Disabled -join "|"))} 
             }
             catch
             {
@@ -57,23 +57,8 @@ function Search-GPO
                 exit
             }
 
-            $DisabledGPO = ForEach ($GPO  in $GPOs)
-            { 
-                Write-Verbose -Message "Checking '$($GPO.DisplayName)' status"
-                switch ($GPO.GPOStatus)
-                {
-                    "ComputerSettingsDisabled" { $DisabledGPO = "Computer Settings" }
-                    "UserSettingsDisabled" { $DisabledGPO = "User Settings" }
-                    "AllSettingsDisabled" { $DisabledGPO = "All Settings" }
-                }
-        
-                [PSCustomObject]@{
-                    Name   = $GPO.DisplayName
-                    Status = $DisabledGPO
-                }
-            }
+            $GPOs | Select-Object GPOStatus,DisplayName,ID,CreationTime,ModificationTime
 
-            return $DisabledGPO
         }
 
         "Empty"
@@ -92,11 +77,8 @@ function Search-GPO
                 [xml]$GPOXMLReport = $GPO | Get-GPOReport -ReportType xml
                 if ($null -eq $GPOXMLReport.GPO.User.ExtensionData -and $null -eq $GPOXMLReport.GPO.Computer.ExtensionData)
                 {
-                    [PSCustomObject]@{
-                        Name         = $GPO.DisplayName
-                        Status       = $GPO.GPOStatus
-                        CreationTime = $GPO.CreationTime
-                    }
+
+                    $GPO | Select-Object DisplayName,ID,GPOStatus,CreationTime,ModificationTime
                 }
             }
 
@@ -121,11 +103,7 @@ function Search-GPO
                 [xml]$GPOXMLReport = $GPO | Get-GPOReport -ReportType xml
                 if ($null -eq $GPOXMLReport.GPO.LinksTo)
                 { 
-                    [PSCustomObject]@{
-                        Name         = $GPO.DisplayName
-                        Status       = $GPO.GPOStatus
-                        CreationTime = $GPO.CreationTime
-                    }
+                    $GPO | Select-Object DisplayName,ID,GPOStatus,CreationTime,ModificationTime
                 }
             }
 

@@ -1,4 +1,4 @@
-﻿function Get-FSMORoles 
+﻿function Get-ADFSMORoles
 {
     param (
         [string]$Domain = $env:USERDNSDOMAIN

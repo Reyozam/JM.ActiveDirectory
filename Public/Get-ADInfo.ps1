@@ -1,4 +1,5 @@
-﻿function Get-ADInfo {
+﻿function Get-ADInfo
+{
 
     <#
     .Description
@@ -16,14 +17,30 @@
         $Domain = $env:USERDNSDOMAIN
     )
 
-    Import-Module ActiveDirectory
+    [pscustomobject]$Object1 = Get-ADDomain -Server $Domain |
+    Select-Object Name, Forest, ChildDomains, DistinguishedName, DNSRoot, DomainMode, ReplicaDirectoryServers, InfrastructureMaster, RIDMaster, PDCEmulator
 
-    Get-ADDomain -Server $Domain |
-    Select-Object Name, Forest, ChildDomains, DistinguishedName, DNSRoot, DomainMode, ReplicaDirectoryServers, InfrastructureMaster, RIDMaster, PDCEmulator |
-    Format-List
+    [pscustomobject]$Object2 = Get-ADForest -Server $Domain | Select-Object DomainNamingMaster, SchemaMaster 
 
-    Get-ADForest -Server $Domain |
-    Select-Object DomainNamingMaster, SchemaMaster |
-    Format-List
+    $arguments = [Pscustomobject]@()
 
+    foreach ( $Property in $Object1.psobject.Properties)
+    {
+        $arguments += @{$Property.Name = $Property.value }   
+    }
+    
+    foreach ( $Property in $Object2.psobject.Properties)
+    {
+        $arguments += @{ $Property.Name = $Property.value }  
+    }
+
+    $MergeObject = [Pscustomobject]$arguments
+
+    return $MergeObject
 }
+
+
+ 
+
+
+

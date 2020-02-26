@@ -21,13 +21,13 @@
         Find-ADUserLockOutSource -Credential (Get-Credential)
       
     .EXAMPLE 
-        Find-ADUserLockOutSource -UserName 'jmazoyer' 
+        Find-ADUserLockOutSource -UserName 'user01' 
       
     .EXAMPLE 
         Find-ADUserLockOutSource -StartTime (Get-Date).AddDays(-1) 
       
     .EXAMPLE 
-        Find-ADUserLockOutSource -UserName 'jmazoyer' -StartTime (Get-Date).AddDays(-1) -Credential (Get-Credential)
+        Find-ADUserLockOutSource -UserName 'user01' -StartTime (Get-Date).AddDays(-1) -Credential (Get-Credential)
     #> 
 function Find-ADUserLockOutSource
 {
@@ -58,7 +58,7 @@ function Find-ADUserLockOutSource
     }
     catch
     {
-        Write-Error -Message 'Unable to query the domain. Verify the user running this script has read access to Active Directory and try again.'
+        Write-Error -Message "Unable to query domain $DomainName."
     }
         
     $Params = @{ }

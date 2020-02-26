@@ -15,21 +15,35 @@
         
         foreach ($DC in $DomainControllers) 
         {
-            $ReplicationPartnerMetadata = Get-ADReplicationPartnerMetadata -Target $DC.Hostname
-
-            foreach ($ReplicationFlow in $ReplicationPartnerMetadata) 
+            $Replication = Get-ADReplicationPartnerMetadata -Target $DC -ErrorAction SilentlyContinue -ErrorVariable ProcessErrors
+            if ($ProcessErrors)
             {
-                [PSCustomObject]@{
-                    DC              = $DC.Name
-                    Partners        = ($ReplicationFlow.Partner -replace "CN=" -split ",")[1]
-                    LastReplication = $ReplicationFlow.LastReplicationSuccess
-                } 
+                foreach ($_ in $ProcessErrors)
+                {
+                    Write-Warning -Message "Get-WinADForestReplicationPartnerMetaData - Error on server $($_.Exception.ServerName): $($_.Exception.Message)"
+                }
             }
-            
-        }
-    
-        end {
-        
+            foreach ($_ in $Replication)
+            {
+                $ServerPartner = (Resolve-DnsName -Name $_.PartnerAddress -Verbose:$false -ErrorAction SilentlyContinue)
+                $ServerInitiating = (Resolve-DnsName -Name $_.Server -Verbose:$false -ErrorAction SilentlyContinue)
+                $ReplicationObject = [ordered] @{
+                    Server                         = $_.Server
+                    ServerPartner                  = $ServerPartner.NameHost
+                    PartnerType                    = $_.PartnerType
+                    LastReplicationAttempt         = $_.LastReplicationAttempt
+                    LastReplicationResult          = $_.LastReplicationResult
+                    LastReplicationSuccess         = $_.LastReplicationSuccess
+                    ConsecutiveReplicationFailures = $_.ConsecutiveReplicationFailures
+                }
+
+                [PSCustomObject] $ReplicationObject
+            }
         }
     }
+    end
+    {
+        
+    }
+    
 }

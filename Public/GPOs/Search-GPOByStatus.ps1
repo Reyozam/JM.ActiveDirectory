@@ -1,11 +1,8 @@
-﻿###############################################################################################################
-# Language     :  PowerShell 5.0
-# Filename     :  Get-RunInfo.ps1
-# Autor        :  Julien Mazoyer
-# Description  :  Search particular GPO status
-###############################################################################################################
+﻿
 
-<#
+function Search-GPOByStatusByStatus
+{
+    <#
     .SYNOPSIS
     Search particular GPO status
 
@@ -13,21 +10,18 @@
     Search particular GPO status
 
     .EXAMPLE
-    PS> Search-GPO -Disabled
+    PS> Search-GPOByStatus -Disabled
 
     .EXAMPLE
-    PS> Search-GPO -Empty
+    PS> Search-GPOByStatus -Empty
 
     .EXAMPLE
-    PS> Search-GPO -Unlinked
+    PS> Search-GPOByStatus -Unlinked
 
 #>
-
-function Search-GPO
-{
     [CmdletBinding()]
     param (
-        [Parameter(ParameterSetName = "Disabled")][ValidateSet("AllSettings","Computer","User")][string[]]$Disabled,
+        [Parameter(ParameterSetName = "Disabled")][ValidateSet("AllSettings", "Computer", "User")][string[]]$Disabled,
         [Parameter(ParameterSetName = "Empty")][switch]$Empty,
         [Parameter(ParameterSetName = "Unlinked")][switch]$Unlinked
     )
@@ -49,7 +43,7 @@ function Search-GPO
         {
             try
             {
-                $GPOs = Get-GPO -All | Where-Object {($_.GpoStatus -ne "AllSettingsEnabled") -AND ($_.GpoStatus -match $($Disabled -join "|"))} 
+                $GPOs = Get-GPO -All | Where-Object { ($_.GpoStatus -ne "AllSettingsEnabled") -AND ($_.GpoStatus -match $($Disabled -join "|")) } 
             }
             catch
             {
@@ -57,7 +51,7 @@ function Search-GPO
                 exit
             }
 
-            $GPOs | Select-Object GPOStatus,DisplayName,ID,CreationTime,ModificationTime
+            $GPOs | Select-Object GPOStatus, DisplayName, ID, CreationTime, ModificationTime
 
         }
 
@@ -78,7 +72,7 @@ function Search-GPO
                 if ($null -eq $GPOXMLReport.GPO.User.ExtensionData -and $null -eq $GPOXMLReport.GPO.Computer.ExtensionData)
                 {
 
-                    $GPO | Select-Object DisplayName,ID,GPOStatus,CreationTime,ModificationTime
+                    $GPO | Select-Object DisplayName, ID, GPOStatus, CreationTime, ModificationTime
                 }
             }
 
@@ -103,7 +97,7 @@ function Search-GPO
                 [xml]$GPOXMLReport = $GPO | Get-GPOReport -ReportType xml
                 if ($null -eq $GPOXMLReport.GPO.LinksTo)
                 { 
-                    $GPO | Select-Object DisplayName,ID,GPOStatus,CreationTime,ModificationTime
+                    $GPO | Select-Object DisplayName, ID, GPOStatus, CreationTime, ModificationTime
                 }
             }
 

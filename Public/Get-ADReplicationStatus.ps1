@@ -27,8 +27,8 @@
             {
                 $ServerPartner = (Resolve-DnsName -Name $_.PartnerAddress -Verbose:$false -ErrorAction SilentlyContinue)
                 $ReplicationObject = [ordered] @{
-                    Server                         = $_.Server
-                    ServerPartner                  = $ServerPartner.NameHost
+                    Server                         = ($_.Server -split "\.")[0].ToUpper()
+                    ServerPartner                  = ($ServerPartner.NameHost -split "\.")[0].ToUpper()
                     PartnerType                    = $_.PartnerType
                     LastReplicationAttempt         = $_.LastReplicationAttempt
                     LastReplicationResult          = $_.LastReplicationResult

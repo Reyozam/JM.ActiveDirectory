@@ -27,6 +27,7 @@
         $Domain = $env:USERDNSDOMAIN
     )
 
+    Clear-Host
     
     [psobject]$DCs = Get-ADDomainController -Server $Domain -Filter * | Select-Object Name, Hostname
     $StartTime = [DateTime]::Now
@@ -59,6 +60,8 @@
             }
         }
     
+        Write-Host "Retry in 5 seconds"
+        Start-Sleep -Seconds 5
 
     } until ($DCs.Count -eq 0)
    

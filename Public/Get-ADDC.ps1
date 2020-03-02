@@ -17,7 +17,7 @@
         [Parameter()][switch]$AsObject
     )
 
-    $DCs = (Get-ADDomainController -Filter * -Server $Domain | Select-Object Hostname,Site,IPv4Address,OperatingSystem,IsGlobalCatalog,IsReadOnly )
+    $DCs = (Get-ADDomainController -Filter * -Server $Domain | Select-Object Hostname,Site,IPv4Address,OperationMasterRoles,IsGlobalCatalog,IsReadOnly )
 
     if ($AsObject)
     {

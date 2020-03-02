@@ -1,10 +1,13 @@
-# JM.ActiveDirectory
+# :closed_lock_with_key: JM.AdminTools
 
-Functions for AD Management
-
-## Overview
+Some PowerShell helpers for Active Directory Daily Tasks
 
 ## Installation
 
-## Examples
+You can get the current release from this repository or install this from the PowerShell Gallery:
 
+```powershell
+iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Reyozam/JM.ActiveDirectory/master/InstallModule.ps1'))
+```
+
+## Functions

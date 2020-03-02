@@ -1,4 +1,4 @@
-# :closed_lock_with_key: JM.AdminTools
+# :busts_in_silhouette: JM.ActiveDirectory
 
 Some PowerShell helpers for Active Directory Daily Tasks
 

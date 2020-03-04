@@ -2,7 +2,7 @@
 
 function Search-GPOByStatusByStatus
 {
-    <#
+<#
     .SYNOPSIS
     Search particular GPO status
 
@@ -17,7 +17,6 @@ function Search-GPOByStatusByStatus
 
     .EXAMPLE
     PS> Search-GPOByStatus -Unlinked
-
 #>
     [CmdletBinding()]
     param (

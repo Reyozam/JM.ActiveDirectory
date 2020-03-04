@@ -1,22 +1,15 @@
-###############################################################################################################
-# Language     :  PowerShell 4.0
-# Filename     :  Export-DomainGPOs.ps1
-# Autor        :  Julien Mazoyer
-# Description  :  Export HTML Report of all GPO in a domain
-###############################################################################################################
-
+Function Export-GPOReport
+{
 <#
     .SYNOPSIS
     Export HTML Report of all GPO in a domain
-
     .DESCRIPTION
     Export HTML Report of all GPO in a domain
-
+    .PARAMETER OutputDirectory
+    
     .EXAMPLE
     PS C:\> Export-DomainGPOs -OutputDirectory C:\TEMP\ -Verbose
 #>
-Function Export-GPOReport
-{
     [CmdletBinding()]
     Param (
         [Parameter(Mandatory = $true)][String]$OutputDirectory,

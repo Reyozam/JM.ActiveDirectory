@@ -1,23 +1,15 @@
-﻿###############################################################################################################
-# Language     :  PowerShell 4.0
-# Filename     :  Get-UserGroupMembership.ps1
-# Autor        :  Julien Mazoyer
-# Description  :  Get AD User Group Membership
-###############################################################################################################
-
+﻿function Get-ADUserGroupMembership
+{
 <#
     .SYNOPSIS
-    Get AD User Group Membership
+    Get AD User Group Membership list
 
     .DESCRIPTION
-    Get AD User Group Membership
+    Get AD User Group Membership list
 
     .EXAMPLE
-    PS C:\> Get-UserGroupMembership "UserSamAccountName"
+    PS C:\> Get-ADUserGroupMembership "UserSamAccountName"
 #>
-function Get-ADGroupMembership
-{
-
     Param (
         [Parameter(Mandatory = $true, ValueFromPipeLine = $true)]
         [Alias("ID", "Users", "Name")]

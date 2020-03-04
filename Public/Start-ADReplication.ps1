@@ -1,18 +1,14 @@
 ﻿Function Start-ADReplication
 {
-    <#
-.SYNOPSIS
-Invokes replication against domain controller.
-.DESCRIPTION
-Invokes replication on specific Domain Controller, or all Domain Controllers found in the domain.
-.PARAMETER All
-Parameter to search and invoke replication against all Domain Controllers.
-.PARAMETER DomainController
-Parameter to search and invoke replicaiton against specific Domain Controller.
-.EXAMPLE
-Invoke-ADReplication -All
-.EXAMPLE
-Invoke-ADReplication -DomainController AD-DC01
+<#
+    .SYNOPSIS
+    Start replication against one or all domain controllers.
+    .DESCRIPTION
+    Start replication against one or all domain controllers.
+    .EXAMPLE
+    Start-ADReplication -All
+    .EXAMPLE
+    Start-ADReplication -DomainController DC01
 #>
     [CmdletBinding(DefaultParameterSetName = 'All')]
     param (

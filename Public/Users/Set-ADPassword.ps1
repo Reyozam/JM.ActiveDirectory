@@ -1,15 +1,32 @@
 ﻿function Set-ADPassword
 {
+<# 
+    .SYNOPSIS 
+        Reset AD Password from the console
+      
+    .DESCRIPTION 
+        Reset AD Password from the console
+      
+    .EXAMPLE 
+        Set-ADPassword
+#>  
     [CmdletBinding()]
     Param (
         [Parameter(Mandatory = $true)]$Username,
         [Parameter(Mandatory = $false)]$Domain = $env:USERDNSDOMAIN,
+        [System.Management.Automation.Credential()]$Credential = [System.Management.Automation.PSCredential]::Empty,
         [switch]$ChangePasswordAtLogon
     )
 
+    $Params = @{ }
+    If ($PSBoundParameters['Credential'])
+    {
+        $Params.Credential = $Credential
+    }
+
     try 
     {
-        $user = Get-ADUser $Username -Server $Domain -ErrorAction Stop
+        $User = Get-ADUser $Username -Server $Domain -ErrorAction Stop
     }
     catch 
     {
@@ -31,7 +48,7 @@
 
     try 
     {
-        Set-ADAccountPassword -identity $Username -Reset -NewPassword $Password01 -Server $Domain -ErrorAction Stop
+        Set-ADAccountPassword -identity $Username -Reset -NewPassword $Password01 -Server $Domain @Params -ErrorAction Stop
         Write-Host "[!] The Password for ${User.Name} has been changed " -ForegroundColor Green
     }
     catch 
@@ -42,7 +59,7 @@
 
     if ($ChangePasswordAtLogon)
     {
-        Set-ADUser -Identity $Username -ChangePasswordAtLogon $true -Server $Domain
+        Set-ADUser -Identity $Username -ChangePasswordAtLogon $true -Server $Domain @Params
     }
 
 }

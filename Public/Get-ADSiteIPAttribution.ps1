@@ -1,5 +1,17 @@
 ﻿function Get-ADSiteIPAttribution
 {
+<# 
+    .SYNOPSIS 
+        Return AD Site attribution by IP Address
+    .DESCRIPTION 
+        Return AD Site attribution by IP Address
+    .EXAMPLE 
+        Get-ADSiteIPAttribution 10.20.160.23
+
+        ADSite  Subnet
+        ------  ------
+        00FR    10.0.0.0/8
+#> 
     param (
         
         [Parameter(Mandatory)]

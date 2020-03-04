@@ -51,7 +51,7 @@ Description = 'Functions for AD Management'
 # ProcessorArchitecture = ''
 
 # Modules qui doivent être importés dans l'environnement global préalablement à l'importation de ce module
-# RequiredModules = @()
+RequiredModules = @("ActiveDirectory")
 
 # Assemblys qui doivent être chargés préalablement à l'importation de ce module
 # RequiredAssemblies = @()

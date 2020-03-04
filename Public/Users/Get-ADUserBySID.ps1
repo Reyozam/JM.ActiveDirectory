@@ -1,21 +1,13 @@
 ﻿function Get-ADUserBySID
 {
-    <#
+<#
     .SYNOPSIS
         Convert SID to user or computer account name
     .DESCRIPTION
-        Convert SID to user or computer account name
-    .PARAMETER SID
-        One or more SIDs to convert
+        Convert SID to user or computer account name, can find built-in SID
     .EXAMPLE
         ConvertFrom-SID S-1-5-21-2139171146-395215898-1246945465-2359
-    .EXAMPLE 
-        'S-1-5-32-580' | ConvertFrom-SID
-    .FUNCTIONALITY
-        Active Directory
-    .NOTES
-        SID conversion for well known SIDs 
-    #>
+#>
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]

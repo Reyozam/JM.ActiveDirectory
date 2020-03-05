@@ -8,6 +8,8 @@ You can get the current release from this repository or install this from the Po
 
 ```powershell
 iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Reyozam/JM.ActiveDirectory/master/InstallModule.ps1'))
+
+Import-Module JM.ActiveDirectory
 ```
 
 ## Functions

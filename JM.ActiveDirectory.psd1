@@ -27,7 +27,7 @@ Author = 'MAZOYER Julien'
 CompanyName = 'Inconnu'
 
 # Déclaration de copyright pour ce module
-Copyright = '(c) 2019 MAZOYER Julien. Tous droits réservés.'
+Copyright = ''
 
 # Description de la fonctionnalité fournie par ce module
 Description = 'Functions for AD Management'

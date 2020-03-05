@@ -12,7 +12,7 @@
 RootModule = 'JM.ActiveDirectory.psm1'
 
 # Numéro de version de ce module.
-ModuleVersion = '0.1'
+ModuleVersion = '1.0'
 
 # Éditions PS prises en charge
 # CompatiblePSEditions = @()

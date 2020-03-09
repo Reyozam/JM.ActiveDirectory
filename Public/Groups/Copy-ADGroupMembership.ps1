@@ -13,7 +13,7 @@
 #>
     [CmdletBinding()]
     param (
-        [String]$SourceUsers,
+        [String]$SourceUser,
         [string[]]$TargetUsers
     )
     

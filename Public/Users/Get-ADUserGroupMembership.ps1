@@ -1,39 +1,61 @@
-﻿function Get-ADUserGroupMembership
-{
-    [cmdletbinding()]
-    param(
-        [string]$SamAccountNAme, 
-        [string]$Server = $env:USERDNSDOMAIN,
-        [int]$Level = 0,
-        [ValidateSet("Group", "User")][string]$ObjectType = "User"
+﻿#requires -version 5.1
+#requires -module ActiveDirectory
+
+<#
+Get-ADMemberOf -identity user | Select-Object -property DistinguishedName
+DistinguishedNAme
+-----------------
+CN=JEA Operators,OU=JEA_Operators,DC=Company,DC=Pri
+CN=Foo,OU=Employees,DC=Company,DC=Pri
+CN=Master Dev,OU=Dev,DC=Company,DC=Pri
+CN=IT,OU=IT,DC=Company,DC=Pri
+#>
+
+Function Get-ADUerGroupMembership {
+    [cmdletBinding()]
+    [OutputType("Microsoft.ActiveDirectory.Management.ADGroup")]
+    Param(
+        [Parameter(
+            Position = 0,
+            Mandatory,
+            HelpMessage = "Enter a user's SAMAccountname or distinguishedname",
+            ValueFromPipeline,
+            ValueFromPipelineByPropertyName
+        )]
+        [ValidateNotNullorEmpty()]
+        [string]$Identity
     )
 
-    $Level = 0
-    $indent = "└" + ("-" * $Level)
+    Begin {
+        Write-Verbose "Starting $($myinvocation.mycommand)"
+        Function Get-GroupMemberOf {
+            Param([string]$identity)
+            $group = Get-ADGroup -Identity $Identity -Properties MemberOf
+            
+            $group
 
-
-    if ($ObjectType -eq "User" -and $Level -eq 0)
-    {
-        $Object = Get-ADUser -Identity $SamAccountNAme -Properties MemberOf -Server $Server
- 
-    }
-    elseif ($ObjectType -eq "Group")
-    {
-        if ($Level -gt 0)
-        {
-            Write-Host "$indent $($d.SamAccountName)"
+            if ($group.MemberOf) {
+                $group | Select-Object -expandProperty MemberOf |
+                ForEach-Object {
+                    Get-GroupMemberOf -identity $_
+                }
         }
+    } #end function
+} #close Begin
 
-        $Object = Get-ADGroup -Identity $SamAccountNAme -Properties MemberOf -Server $Server
-    }
- 
-        $Object.MemberOf | Sort-Object | ForEach-Object {
-            # prevent a loop if the group is a member of itself
-            if ( $_ -ne $Object.DistinguishedName )
-            {
-                Get-ADUserGroupMembership -SamAccountNAme $_  -Level($Level + 1) -ObjectType Group
-            }
-        }
+Process {
+    Write-Verbose "Getting all groups for user $identity"
+    Get-ADUser -identity $identity -Properties memberof |
+        Select-Object -ExpandProperty MemberOf |
+        ForEach-Object {
+            Write-Verbose "Getting group member of $_"
+            Get-GroupMemberOf -identity $_
+        } #foreach
+} #close process
+
+End {
+    Write-Verbose "Ending $($myinvocation.mycommand)"
 }
+} 
     
 

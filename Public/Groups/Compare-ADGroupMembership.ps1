@@ -23,8 +23,8 @@
         [Parameter(Mandatory,
             ValueFromPipeline)]
         [string[]]$UserName,
-    
-        [switch]$IncludeEqual
+        [switch]$IncludeEqual,
+        [string]$Server = $env:USERDNSDOMAIN
     )
     
     BEGIN { }
@@ -36,7 +36,7 @@
             try
             {
                 Write-Verbose -Message "Attempting to query Active Directory of user: '$name'."
-                [array]$users += Get-ADUser -Identity $name -Properties MemberOf -ErrorAction Stop
+                [array]$users += Get-ADUser -Identity $name -Properties MemberOf -Server $Server -ErrorAction Stop
             }
             catch
             {

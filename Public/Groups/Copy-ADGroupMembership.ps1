@@ -14,7 +14,8 @@
     [CmdletBinding()]
     param (
         [String]$SourceUser,
-        [string[]]$TargetUsers
+        [string[]]$TargetUsers,
+        [string]$Server = $env:USERDNSDOMAIN
     )
     
     begin
@@ -24,9 +25,9 @@
     
     process
     {
-        Get-ADUser -Identity $SourceUser -Properties memberof |
+        Get-ADUser -Identity $SourceUser -Properties memberof -Server $Server |
         Select-Object -ExpandProperty memberof |
-        Add-ADGroupMember -Members $TargetUsers -Verbose
+        Add-ADGroupMember -Members $TargetUsers -Server $Server -Verbose
     }
     
     end

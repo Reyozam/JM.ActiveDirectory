@@ -24,12 +24,12 @@
 
         [Parameter()]
         [string]
-        $Domain = $env:USERDNSDOMAIN
+        $Server = $env:USERDNSDOMAIN
     )
 
     #Clear-Host
     
-    [psobject]$DCs = Get-ADDomainController -Server $Domain -Filter * | Select-Object Name, Hostname
+    [psobject]$DCs = Get-ADDomainController -Server $Server -Filter * | Select-Object Name, Hostname
     $ComputerPattern = $Identity + "$"
 
     $StartTime = [DateTime]::Now

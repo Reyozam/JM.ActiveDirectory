@@ -20,10 +20,10 @@
 
     [CmdletBinding()]
     param (
-        [Parameter()][string]$Domain = $env:USERDNSDOMAIN
+        [Parameter()][string]$Server = $env:USERDNSDOMAIN
     )
 
-    $DCs = (Get-ADDomainController -Filter * -Server $Domain | Select-Object Hostname, Site, IPv4Address, OperationMasterRoles, IsGlobalCatalog, IsReadOnly,OperatingSystem)
+    $DCs = (Get-ADDomainController -Filter * -Server $Server | Select-Object Hostname, Site, IPv4Address, OperationMasterRoles, IsGlobalCatalog, IsReadOnly,OperatingSystem)
 
     return $DCs
 

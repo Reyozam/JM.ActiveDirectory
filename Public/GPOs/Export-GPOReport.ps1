@@ -13,7 +13,7 @@ Function Export-GPOReport
     [CmdletBinding()]
     Param (
         [Parameter(Mandatory = $true)][String]$OutputDirectory,
-        [String]$Domain = $env:userdomain
+        [String]$Server = $env:userdomain
 
     )
 
@@ -32,9 +32,9 @@ Function Export-GPOReport
     #Remove trailing slash if present.
     If ($OutputDirectory -like "*\") { $OutputDirectory = $OutputDirectory.substring(0, ($OutputDirectory.Length - 1)) }
 
-    $OutputDirectory = Join-Path -Path $OutputDirectory -ChildPath ("{0}-GPO-{1}" -f (Get-Date -f "yyMMdd"), $Domain.ToUpper())
-    $DomainFQDN = (Get-ADDomain $Domain).DNSRoot
-    $GPOs = Get-Gpo -All -Domain $DomainFQDN
+    $OutputDirectory = Join-Path -Path $OutputDirectory -ChildPath ("{0}-GPO-{1}" -f (Get-Date -f "yyMMdd"), $Server.ToUpper())
+    $ServerFQDN = (Get-ADDomain $Server).DNSRoot
+    $GPOs = Get-Gpo -All -Domain $ServerFQDN
     $AllGPOs = @()
 
     If (!(Test-Path $OutputDirectory)) { mkdir $OutputDirectory -Force | Out-Null }
@@ -49,16 +49,16 @@ Function Export-GPOReport
         $AllGPOs += $GPO.DisplayName
         Write-Verbose ("Exporting " + $OutputDirectory + "\" + $GPO.DisplayName + ".HTML...")
         $Path = $OutputDirectory + "\" + $GPO.DisplayName + ".HTML"
-        Get-GPOReport -Name $GPO.DisplayName -Domain $DomainFQDN -ReportType HTML -Path $Path
+        Get-GPOReport -Name $GPO.DisplayName -Domain $ServerFQDN -ReportType HTML -Path $Path
     }
     $AllGPOs = $AllGPOs | Sort-Object
     Write-Verbose ("Exporting " + $OutputDirectory + "\AllGPOs.txt...")
     $AllGPOs | Out-File ($OutputDirectory + "\AllGPOs.txt")
 
-    $OUs = Get-ADOrganizationalUnit -Filter * -server $DomainFQDN | Sort-Object { -join ($_.distinguishedname[($_.distinguishedname.length - 1)..0]) }
+    $OUs = Get-ADOrganizationalUnit -Filter * -server $ServerFQDN | Sort-Object { -join ($_.distinguishedname[($_.distinguishedname.length - 1)..0]) }
     $OutputArray = @()
     $OUs | ForEach-Object {
-        $Inheritance = Get-GPInheritance -Target $_.DistinguishedName -Domain $DomainFQDN
+        $Inheritance = Get-GPInheritance -Target $_.DistinguishedName -Domain $ServerFQDN
 
         $GpoLinks = @()
         If ($Inheritance.GpoLinks.DisplayName)

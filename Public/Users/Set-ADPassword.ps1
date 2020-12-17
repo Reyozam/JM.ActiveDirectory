@@ -13,7 +13,7 @@
     [CmdletBinding()]
     Param (
         [Parameter(Mandatory = $true)]$Username,
-        [Parameter(Mandatory = $false)]$Domain = $env:USERDNSDOMAIN,
+        [Parameter(Mandatory = $false)]$Server = $env:USERDNSDOMAIN,
         [System.Management.Automation.Credential()]$Credential = [System.Management.Automation.PSCredential]::Empty,
         [switch]$ChangePasswordAtLogon
     )
@@ -26,11 +26,11 @@
 
     try 
     {
-        $User = Get-ADUser $Username -Server $Domain -ErrorAction Stop
+        $User = Get-ADUser $Username -Server $Server -ErrorAction Stop
     }
     catch 
     {
-        Write-Warning "$Username not found in $Domain"
+        Write-Warning "$Username not found in $Server"
         break
     }
 
@@ -48,7 +48,7 @@
 
     try 
     {
-        Set-ADAccountPassword -identity $Username -Reset -NewPassword $Password01 -Server $Domain @Params -ErrorAction Stop
+        Set-ADAccountPassword -identity $Username -Reset -NewPassword $Password01 -Server $Server @Params -ErrorAction Stop
         Write-Host "[!] The Password for ${User.Name} has been changed " -ForegroundColor Green
     }
     catch 
@@ -59,7 +59,7 @@
 
     if ($ChangePasswordAtLogon)
     {
-        Set-ADUser -Identity $Username -ChangePasswordAtLogon $true -Server $Domain @Params
+        Set-ADUser -Identity $Username -ChangePasswordAtLogon $true -Server $Server @Params
     }
 
 }

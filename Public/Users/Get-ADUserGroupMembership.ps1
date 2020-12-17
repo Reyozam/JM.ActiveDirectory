@@ -1,61 +1,52 @@
-﻿#requires -version 5.1
-#requires -module ActiveDirectory
-
-<#
-Get-ADMemberOf -identity user | Select-Object -property DistinguishedName
-DistinguishedNAme
------------------
-CN=JEA Operators,OU=JEA_Operators,DC=Company,DC=Pri
-CN=Foo,OU=Employees,DC=Company,DC=Pri
-CN=Master Dev,OU=Dev,DC=Company,DC=Pri
-CN=IT,OU=IT,DC=Company,DC=Pri
-#>
-
-Function Get-ADUerGroupMembership {
+﻿Function Get-ADUserGroupMembership
+{
     [cmdletBinding()]
     [OutputType("Microsoft.ActiveDirectory.Management.ADGroup")]
     Param(
-        [Parameter(
-            Position = 0,
-            Mandatory,
-            HelpMessage = "Enter a user's SAMAccountname or distinguishedname",
-            ValueFromPipeline,
-            ValueFromPipelineByPropertyName
-        )]
+        [Parameter(Mandatory, HelpMessage = "Enter a user's SAMAccountname or distinguishedname", ValueFromPipeline, ValueFromPipelineByPropertyName)]
         [ValidateNotNullorEmpty()]
-        [string]$Identity
+        [string]$Identity,
+
+        [Parameter()]
+        [string]$Server = $env:USERDNSDOMAIN
+
     )
 
-    Begin {
+    Begin
+    {
         Write-Verbose "Starting $($myinvocation.mycommand)"
-        Function Get-GroupMemberOf {
-            Param([string]$identity)
-            $group = Get-ADGroup -Identity $Identity -Properties MemberOf
+        Function Get-GroupMemberOf
+        {
+            Param([string]$identity, [string]$Server)
+            $group = Get-ADGroup -Identity $Identity -Server $Server -Properties MemberOf
             
             $group
 
-            if ($group.MemberOf) {
-                $group | Select-Object -expandProperty MemberOf |
-                ForEach-Object {
-                    Get-GroupMemberOf -identity $_
-                }
-        }
-    } #end function
-} #close Begin
+            if ($group.MemberOf)
+            {
+                $group | Select-Object -ExpandProperty MemberOf |
+                    ForEach-Object {
+                        Get-GroupMemberOf -identity $_ -Server $Server
+                    }
+            }
+        } #end function
+    } #close Begin
 
-Process {
-    Write-Verbose "Getting all groups for user $identity"
-    Get-ADUser -identity $identity -Properties memberof |
-        Select-Object -ExpandProperty MemberOf |
-        ForEach-Object {
-            Write-Verbose "Getting group member of $_"
-            Get-GroupMemberOf -identity $_
-        } #foreach
-} #close process
+    Process
+    {
+        Write-Verbose "Getting all groups for user $identity"
+        Get-ADUser -Identity $identity -Properties memberof -Server $Server |
+            Select-Object -ExpandProperty MemberOf |
+            ForEach-Object {
+                Write-Verbose "Getting group member of $_"
+                Get-GroupMemberOf -identity $_ -Server $Server
+            } #foreach
+    } #close process
 
-End {
-    Write-Verbose "Ending $($myinvocation.mycommand)"
-}
+    End
+    {
+        Write-Verbose "Ending $($myinvocation.mycommand)"
+    }
 } 
     
 

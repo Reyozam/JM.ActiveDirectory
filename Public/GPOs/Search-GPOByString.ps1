@@ -21,7 +21,7 @@
     [OutputType([pscustomobject])]
     param (
         [Parameter(Mandatory = $true,Position = 0)][ValidateNotNullOrEmpty()][string]$String,
-        [Parameter(Mandatory = $false,Position = 1)][ValidateNotNullOrEmpty()][string]$Domain = $env:USERDNSDOMAIN
+        [Parameter(Mandatory = $false,Position = 1)][ValidateNotNullOrEmpty()][string]$Server = $env:USERDNSDOMAIN
     )
     begin
     {
@@ -29,7 +29,7 @@
     }
     process
     {
-        $AllGPOObjects = (Get-GPO -All -Domain $Domain)
+        $AllGPOObjects = (Get-GPO -All -Domain $Server)
 
         $Result = foreach ($GPO in $AllGPOObjects)
         {

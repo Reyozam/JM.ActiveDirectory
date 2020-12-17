@@ -17,7 +17,7 @@
     [CmdletBinding()] 
     param ( 
         [ValidateNotNullOrEmpty()] 
-        [string]$DomainName = $env:USERDOMAIN, 
+        [string]$Server = $env:USERDOMAIN, 
  
         [ValidateNotNullOrEmpty()] 
         [string]$UserName = '*', 
@@ -33,7 +33,7 @@
         $ErrorActionPreference = 'Stop'
 
         $PdcEmulator = [System.DirectoryServices.ActiveDirectory.Domain]::GetDomain(( 
-                New-Object System.DirectoryServices.ActiveDirectory.DirectoryContext('Domain', $DomainName)) 
+                New-Object System.DirectoryServices.ActiveDirectory.DirectoryContext('Domain', $Server)) 
         ).PdcRoleOwner.name
 
         Write-Verbose -Message "The PDC emulator in your forest root domain is: $PdcEmulator"

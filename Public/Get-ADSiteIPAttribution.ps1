@@ -16,10 +16,16 @@
         
         [Parameter(Mandatory)]
         [IPAddress[]]
-        $IP
+        $IP,
+        [Parameter()]
+        [string]
+        $Server = $env:USERDNSDOMAIN
+
     )
 
-    $Site = nltest /DSADDRESSTOSITE:$IP /dsgetsite 2>$null
+    $PDC = (Get-ADDomain -Server $Server).PDCEmulator
+
+    $Site = nltest /DSADDRESSTOSITE:$IP /dsgetsite /SERVER:$PDC 2>$null
     if ($LASTEXITCODE -eq 0)
     {
         $Split = $Site[3] -split "\s+"

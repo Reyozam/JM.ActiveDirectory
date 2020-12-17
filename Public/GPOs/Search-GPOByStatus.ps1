@@ -22,7 +22,8 @@ function Search-GPOByStatusByStatus
     param (
         [Parameter(ParameterSetName = "Disabled")][ValidateSet("AllSettings", "Computer", "User")][string[]]$Disabled,
         [Parameter(ParameterSetName = "Empty")][switch]$Empty,
-        [Parameter(ParameterSetName = "Unlinked")][switch]$Unlinked
+        [Parameter(ParameterSetName = "Unlinked")][switch]$Unlinked,
+        [Parameter()][string]$Server = $env:USERDNSDOMAIN
     )
     
     try
@@ -42,7 +43,7 @@ function Search-GPOByStatusByStatus
         {
             try
             {
-                $GPOs = Get-GPO -All | Where-Object { ($_.GpoStatus -ne "AllSettingsEnabled") -AND ($_.GpoStatus -match $($Disabled -join "|")) } 
+                $GPOs = Get-GPO -All -Server $Server | Where-Object { ($_.GpoStatus -ne "AllSettingsEnabled") -AND ($_.GpoStatus -match $($Disabled -join "|")) } 
             }
             catch
             {
@@ -58,7 +59,7 @@ function Search-GPOByStatusByStatus
         {
             try
             {          
-                $GPOs = Get-GPO -All  
+                $GPOs = Get-GPO -All -Server $Server
             }
             catch
             {
@@ -82,7 +83,7 @@ function Search-GPOByStatusByStatus
         {
             try
             {          
-                $GPOs = Get-GPO -All  
+                $GPOs = Get-GPO -All -Server $Server
             }
             catch
             {

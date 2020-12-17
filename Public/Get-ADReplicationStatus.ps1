@@ -20,12 +20,12 @@
 #> 
     [CmdletBinding()]
     param (
-        $Domain = $env:USERDNSDOMAIN
+        $Server = $env:USERDNSDOMAIN
     )
     
     begin
     {
-        $DomainControllers = Get-ADDomainController -Filter *
+        $DomainControllers = Get-ADDomainController -Filter * -Server $Server
     }
     
     process

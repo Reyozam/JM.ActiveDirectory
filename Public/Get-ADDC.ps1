@@ -20,21 +20,12 @@
 
     [CmdletBinding()]
     param (
-        [Parameter()][string]$Domain = $env:USERDNSDOMAIN,
-
-        [Parameter()][switch]$AsObject
+        [Parameter()][string]$Domain = $env:USERDNSDOMAIN
     )
 
-    $DCs = (Get-ADDomainController -Filter * -Server $Domain | Select-Object Hostname, Site, IPv4Address, OperationMasterRoles, IsGlobalCatalog, IsReadOnly )
+    $DCs = (Get-ADDomainController -Filter * -Server $Domain | Select-Object Hostname, Site, IPv4Address, OperationMasterRoles, IsGlobalCatalog, IsReadOnly,OperatingSystem)
 
-    if ($AsObject)
-    {
-        return $DCs
-    }
-    else
-    {
-        $DCs | Format-table -AutoSize
-    }
+    return $DCs
 
 }
 

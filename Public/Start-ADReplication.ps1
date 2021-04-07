@@ -24,7 +24,7 @@
     {
         if ($PSCmdlet.ParameterSetName -eq 'All')
         {
-            $DomainControllers = (Get-ADDomainController -filter *).name
+            $DomainControllers = (Get-ADDomainController -filter * -Server $env:USERDNSDOMAIN).name
             $LastRepTime = (Get-ADReplicationUpToDatenessVectorTable -Target $DomainControllers[0]).LastReplicationSuccess[0]
             Write-Output "Last replication time was at - $LastRepTime"
             foreach ($DC in $DomainControllers)

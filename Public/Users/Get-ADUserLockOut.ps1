@@ -16,11 +16,12 @@
 
     [CmdletBinding()] 
     param ( 
-        [ValidateNotNullOrEmpty()] 
-        [string]$Server = $env:USERDOMAIN, 
- 
+
         [ValidateNotNullOrEmpty()] 
         [string]$UserName = '*', 
+        
+        [ValidateNotNullOrEmpty()] 
+        [string]$Server = $env:USERDNSDOMAIN, 
  
         [ValidateNotNullOrEmpty()] 
         [datetime]$StartTime = (Get-Date).AddDays(-3),
@@ -30,11 +31,8 @@
 
     try
     {
-        $ErrorActionPreference = 'Stop'
-
-        $PdcEmulator = [System.DirectoryServices.ActiveDirectory.Domain]::GetDomain(( 
-                New-Object System.DirectoryServices.ActiveDirectory.DirectoryContext('Domain', $Server)) 
-        ).PdcRoleOwner.name
+        Write-Verbose -Message "Looking for  PDC emulator in $Server domain"
+        $PdcEmulator = (Get-ADDomain -Server $Server -ErrorAction Stop).PDCEmulator
 
         Write-Verbose -Message "The PDC emulator in your forest root domain is: $PdcEmulator"
         $ErrorActionPreference = 'Continue'

@@ -3,6 +3,7 @@ if ($myinvocation.line -match "-verbose") {
 }
 
 
+
 # Dot source public/private functions
 $Public  = @(Get-ChildItem -Path (Join-Path -Path $PSScriptRoot -ChildPath 'public') -Filter "*.ps1"  -Recurse -ErrorAction Stop)
 

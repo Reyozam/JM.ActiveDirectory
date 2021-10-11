@@ -29,7 +29,7 @@
 
     #Clear-Host
     
-    [psobject]$DCs = Get-ADDomainController -Server $Server -Filter * | Select-Object Name, Hostname
+    [psobject]$DCs = Get-ADDomainController -Server $Server -Filter * | Select-Object Name, Hostname,@{Name="Identity";expression={$Identity}}
     $ComputerPattern = $Identity + "$"
 
     $StartTime = [DateTime]::Now
@@ -37,49 +37,24 @@
     
     Write-Host "[+] Search [$($Identity.ToUpper())] on $($DCs.Count) domain controllers ... "
 
-    do 
-    {
-        foreach ($DC in $DCs) 
-        {
-            try
-            {
-                $Search = Get-ADObject -Filter {SamAccountName -like $Identity -OR SamAccountName -like $ComputerPattern} -Server $DC.Hostname -ErrorAction SilentlyContinue
-            }
-            catch
-            {
-                Write-Host "`t[!] " -ForegroundColor Yellow -NoNewLine
-                Write-Host "Unable to reach $($Dc.Hostname)" -ForegroundColor Yellow
-                
-                $DCs = $DCS | Where-Object { $_.Name -ne $DC.Name }
-                continue
-            }
-
-            if ($Search)
-            {
-                $Metadata = Get-ADReplicationAttributeMetadata -Object $Search -Server $Dc.Hostname | Where-Object {$_.AttributeName -eq "cn"}
-
-                Write-Host "`t[+] " -ForegroundColor Green -NoNewLine
-                Write-Host "Object found on $($DC.Name) - First Replicated on $($MetaData.LastOriginatingChangeTime)" -ForegroundColor Green
-
-                $DCs = $DCS | Where-Object { $_.Name -ne $DC.Name }
-
-                $Output.Add([PSCustomObject]@{
-                        Object        = $Metadata.Object
-                        Server        = $Metadata.Server
-                        ReplicatedOn  = $Metadata.LastOriginatingChangeTime
-                    }) | Out-Null
-            }
-            else
-            {
-
-            }
-        }
     
+    $Output = $DCs | ForEach-Object -Parallel {
+
+
+        #$Search = 
         
+        $Search = Get-ADObject -Filter  "SamAccountName -eq '$($_.Identity)' -OR SamAccountName -eq '$($_.Identity+"$")'" -Server $_.Hostname -Properties modified -ErrorAction SilentlyContinue
+        #-Server $_.Hostname -Properties modified -ErrorAction SilentlyContinue
+        
+        [PSCustomObject]@{
+            Name = $_.Name
+            Found = if ($Search) {$true} else {$false}
+            LastModified = $Search.modified
+        } 
+    } 
+    
 
-    } until ($DCs.Count -eq 0)
-
-    Write-Output ($Output | Sort-Object ReplicatedOn)
+    Write-Output ($Output | Sort-Object LastModified)
 
 }
     

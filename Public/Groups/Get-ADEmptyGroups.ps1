@@ -1,5 +1,5 @@
 ﻿
-Function Get-ADEmptyGroup
+function Get-ADEmptyGroups
 {
 <#
     .SYNOPSIS
@@ -14,9 +14,27 @@ Function Get-ADEmptyGroup
 
     [CmdletBinding()]
     param(
-        [string]$Server = $env:USERDNSDOMAIN
+        [string]$Server = $env:USERDNSDOMAIN,
+        [string]$SearchScope
     )
 
-        return Get-ADGroup -LDAPFilter "(!(member=*))" -Server $Server
+         
+    Try {
+        If($SearchScope) 
+        {
+          Write-Verbose "Lookup empty groups under $SearchScope ..."
+          Get-ADGroup -Filter { Members -notlike "*" } -SearchBase $SearchScope -Server $Server | Select-Object Name, GroupCategory, DistinguishedName
+        } 
+        Else 
+        {
+          Write-Verbose "Lookup empty groups on all $Server domain ..."
+          Get-ADGroup -Filter { Members -notlike "*" } -Server $Server | Select-Object Name, GroupCategory, DistinguishedName
+        }
+      }
+  
+      Catch {
+        Write-Error "$($_.Exception.Message)"
+        Break
+      }
 
 }

@@ -39,7 +39,7 @@ Function Get-ADChange {
         Param([datetime]$Date)
         $offset = (Get-TimeZone).baseUtcOffset
         #values must be formatted with leading zeros to the specified number of decimal places
-        $tz = "{0:d2}{1:d2}" -f $offset.hours,$offset.Minutes
+        $tz = "Z" -f $offset.hours,$offset.Minutes
         "{0:yyyyMMddhhmmss}.0{1}" -f $date,$tz
     }
 

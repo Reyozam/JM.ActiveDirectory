@@ -63,7 +63,7 @@ RequiredModules = @("ActiveDirectory")
 # TypesToProcess = @()
 
 # Fichiers de format (.ps1xml) à charger lors de l'importation de ce module
- FormatsToProcess = @("Formats\adchange.format.ps1xml")
+ FormatsToProcess = @("Formats\adchange.format.ps1xml","Formats\adaudittrail.format.ps1xml")
 
 # Modules à importer en tant que modules imbriqués du module spécifié dans RootModule/ModuleToProcess
 # NestedModules = @()

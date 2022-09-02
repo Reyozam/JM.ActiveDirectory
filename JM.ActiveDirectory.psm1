@@ -2,6 +2,7 @@ if ($myinvocation.line -match "-verbose") {
     $VerbosePreference = "continue"
 }
 
+$Script:ModuleRoot = $PSScriptRoot
 
 
 # Dot source public/private functions
@@ -17,4 +18,4 @@ foreach ($import in @($Public)) {
     }
 }
 
-Export-ModuleMember -Function $Public.BaseName
+Export-ModuleMember -Function $Public.BaseName -Alias *

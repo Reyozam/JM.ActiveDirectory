@@ -1,6 +1,7 @@
 function Search-ADUser
 {
     [CmdletBinding()]
+    [alias("su")]
     Param (
         [Parameter(Mandatory = $true)]
         [Alias("User", "UserName", "SamAccountName", "Name")]
@@ -9,11 +10,11 @@ function Search-ADUser
         [string]$Server = $env:USERDOMAIN
 
     )
-    
-    try 
+
+    try
     {
-        $Found = Get-ADUser $Search -Properties LastLogonDate,PasswordLastSet -ErrorAction Stop -Server $Server 
-        return $Found.SamAccountName
+        $Found = Get-ADUser $Search -Properties LastLogonDate,PasswordLastSet -ErrorAction Stop -Server $Server
+        return $Found
     }
     catch
     {

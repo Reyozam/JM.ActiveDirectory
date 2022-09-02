@@ -1,4 +1,4 @@
-﻿Function Find-ADObsoleteComputer
+﻿Function Get-ADObsoleteComputer
 {
 <#
     .SYNOPSIS
@@ -6,11 +6,11 @@
     .DESCRIPTION
     Function is querying the Active Directory and searching for all computer objects that did not update their passwords for period of time.
     .PARAMETER PasswordOlderThan
-    
+
     .EXAMPLE
     PS C:\> Find-ObsoleteComputer -PasswordOlderThan 90
-    ComputerName    PasswordLastSet     
-    ------------    ---------------     
+    ComputerName    PasswordLastSet
+    ------------    ---------------
     DESKTOP-ROOH24P 21/2/2018 13:35:04
 #>
     [CmdletBinding()]

@@ -16,22 +16,27 @@
 
     [CmdletBinding()]
     param(
+        [string] $Server = $env:USERDNSDOMAIN,
         [switch] $Extended
     )
-    $Replication = Get-ADReplicationPartnerMetadata -Target * -Partition $((Get-ADDomain).DistinguishedName) -ErrorAction SilentlyContinue -ErrorVariable ProcessErrors
+
+    $DomainInfo = Get-ADDomain $Server
+    $FQDN = $DomainInfo.DNSRoot
+    $PDC = $DomainInfo.PDCEmulator
+
+    $Replication = Get-ADReplicationPartnerMetadata -Target $FQDN -Partition $((Get-ADDomain -server $Server).DistinguishedName) -EnumerationServer $PDC -Scope Domain  -ErrorAction SilentlyContinue -ErrorVariable ProcessErrors
     if ($ProcessErrors) {
         foreach ($_ in $ProcessErrors) {
-            Write-Warning -Message "Get-WinADForestReplicationPartnerMetaData - Error on server $($_.Exception.ServerName): $($_.Exception.Message)"
+            Write-Warning -Message "Get-ADReplicationPartnerMetaData - Error on server $($_.Exception.ServerName): $($_.Exception.Message)"
         }
     }
     foreach ($_ in $Replication) {
         $ServerPartner = (Resolve-DnsName -Name $_.PartnerAddress -Verbose:$false -ErrorAction SilentlyContinue)
         $ServerInitiating = (Resolve-DnsName -Name $_.Server -Verbose:$false -ErrorAction SilentlyContinue)
         $ReplicationObject = [ordered] @{
-            Server                         = $_.Server
-            ServerIPV4                     = $ServerInitiating.IP4Address
-            ServerPartner                  = $ServerPartner.NameHost
-            ServerPartnerIPV4              = $ServerPartner.IP4Address
+            PSTypeName        = "ADReplication"
+            To                         = $_.Server
+            From                  = $ServerPartner.NameHost
             LastReplicationAttempt         = $_.LastReplicationAttempt
             LastReplicationResult          = $_.LastReplicationResult
             LastReplicationSuccess         = $_.LastReplicationSuccess
@@ -58,6 +63,8 @@
             $ReplicationObject.PartnerInvocationId = $_.PartnerInvocationId
             $ReplicationObject.PartitionGuid = $_.PartitionGuid
         }
-        [PSCustomObject] $ReplicationObject
+        [PSCustomObject]$ReplicationObject
     }
 }
+
+Update-TypeData -TypeName ADReplication -DefaultDisplayPropertySet From,To,LastReplicationAttempt,LastReplicationSuccess,ConsecutiveReplicationFailures -Force

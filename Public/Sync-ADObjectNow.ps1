@@ -13,20 +13,36 @@
     [CmdletBinding()]
     param (
         [parameter(Mandatory)][string]$Identity,
-        [parameter()][string]$SourceDC = (Get-ADDomainController -Discover).hostname
+        [parameter()][string]$SourceDC = (Get-ADDomainController -Discover).hostname,
+        [pscredential]$Credential
     )
-    
+
+    $Params = @{
+        Server = $SourceDC
+    }
+
+    $SyncParams = @{
+        source = $SourceDC
+    }
+
+    if ($Credential)
+    {
+        $Params["Credential"] = $Credential
+        $SyncParams["Credential"] = $Credential
+    }
+
     Write-Verbose "Looking for $identity on $SourceDC ..."
 
-    try 
+    try
     {
-        $ADObject = Get-ADObject -Filter { SamAccountName -eq $Identity -OR Name -eq $Identity } -ErrorAction Stop -Server $SourceDC
+        $ADObject = Get-ADObject -Filter { SamAccountName -eq $Identity -OR Name -eq $Identity } -ErrorAction Stop @Params
     }
-    catch 
+    catch
     {
         Write-Warning "$Identity not found on $SourceDC"
         break
     }
-    Get-ADDomainController -filter * | ForEach-Object { Sync-ADObject -object $ADObject.DistinguishedName -source $SourceDC -destination $_.hostname -Verbose }
+
+    Get-ADDomainController -filter * @Params | ForEach-Object { Sync-ADObject -object $ADObject.DistinguishedName @SyncParams -Destination $_.hostname -Verbose }
 
 }

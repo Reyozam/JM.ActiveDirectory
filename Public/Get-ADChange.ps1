@@ -23,8 +23,8 @@ Function Get-ADChange {
         [Parameter(HelpMessage = "Specifies the Active Directory Domain Services domain controller to query. The default is your Logon server.")]
         [alias("DC")]
         [ValidateNotNullorEmpty()]
-        #[ArgumentCompleter({(Get-ADDomain).ReplicaDirectoryServers})]
-        [string]$Server = $env:LOGONSERVER.SubString(2),
+        [ArgumentCompleter({(Get-ADDomain).ReplicaDirectoryServers})]
+        [string]$Server = $env:USERDNSDOMAIN,
         [Parameter(HelpMessage = "Specify an alternate credential for authentication.")]
         [alias("runas")]
         [pscredential]$Credential,
@@ -151,7 +151,4 @@ Update-TypeData -TypeName ADChange -DefaultDisplayPropertySet DistinguishedName,
 #define some alias properties for the custom object
 Update-TypeData -TypeName ADChange -MemberType AliasProperty -MemberName class -Value ObjectClass -Force
 Update-TypeData -TypeName ADChange -MemberType AliasProperty -MemberName DN -Value DistinguishedName -Force
-
-#load a custom formatting file which has additional custom views of container and class
-#It is assumed the format file is in the same directory as this file.
-#Update-FormatData $PSScriptRoot\ADchange.format.ps1xml
+Update-FormatData $ModuleRoot\Formats\ADchange.format.ps1xml

@@ -1,6 +1,6 @@
 ﻿function Get-ADDC
 {
-<#
+    <#
     .SYNOPSIS
         This function will return domain controllers list & info.
 
@@ -23,7 +23,25 @@
         [Parameter()][string]$Server = $env:USERDNSDOMAIN
     )
 
-    $DCs = (Get-ADDomainController -Filter * -Server $Server | Select-Object Name, Site, IPv4Address,OperatingSystem,OperationMasterRoles)
+    $Properties = @(
+        @{Name = 'Name'; Expression = {
+                if ($host.name -eq 'ConsoleHost')
+                {
+                    if ($_.OperationMasterRoles -contains 'PDCEmulator') { "$([char]0x1b)[93m$($_.Name)$([char]0x1b)[0m" }
+                    else { $_.Name }
+                }
+                else
+                {
+                    $_.Name
+                }
+            }
+        },
+        'Site',
+        'IPv4Address',
+        'OperatingSystem'
+    )
+
+    $DCs = (Get-ADDomainController -Filter * -Server $Server | Select-Object $Properties)
 
     return $DCs
 

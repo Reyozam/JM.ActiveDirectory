@@ -1,4 +1,4 @@
-﻿function Get-DCLockoutEvents {
+﻿function Get-ADLockoutEvents {
 
     <#
     .DESCRIPTION

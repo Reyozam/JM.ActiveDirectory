@@ -1,0 +1,144 @@
+<!--
+Format type data generated 01/24/2023 11:01:01 by D12\KM5078
+
+This file was created using the New-PSFormatXML command that is part
+of the PSScriptTools module.
+
+https://github.com/jdhitsolutions/PSScriptTools
+-->
+<Configuration>
+  <ViewDefinitions>
+    <View>
+      <!--Created 01/24/2023 11:01:01 by D12\KM5078-->
+      <Name>default</Name>
+      <ViewSelectedBy>
+        <TypeName>Microsoft.ActiveDirectory.Management.ADUser</TypeName>
+      </ViewSelectedBy>
+      <ListControl>
+        <ListEntries>
+          <ListEntry>
+            <ListItems>
+              <!--
+            By default the entries use property names, but you can replace them with scriptblocks.
+            <ScriptBlock>$_.foo /1mb -as [int]</ScriptBlock>
+-->
+              <ListItem>
+                <Label>DistinguishedName</Label>
+                <PropertyName>DistinguishedName</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>Enabled</Label>
+                <ScriptBlock>
+                if ($host.name -eq 'ConsoleHost') {
+                  if ($_.Enabled)
+                  {
+                    "$([char]0x1b)[32m$($_.Enabled)$([char]0x1b)[0m"
+                  }
+                  else
+                  {
+                    "$([char]0x1b)[91m$($_.Enabled)$([char]0x1b)[0m" 
+                  }
+                }
+                else
+                {
+                  $_.Enabled
+                } 
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <Label>flags</Label>
+                <PropertyName>flags</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>GivenName</Label>
+                <PropertyName>GivenName</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>LastLogonDate</Label>
+                <ScriptBlock>
+                if ($host.name -eq 'ConsoleHost') {
+                  $LastLogonDate = $_.LastLogonDate
+                  switch ((New-TimeSpan -Start $($LastLogonDate) -End ([datetime]::Now)).Days) {
+                    {$_ -gt 90} { "$([char]0x1b)[91m$($LastLogonDate)$([char]0x1b)[0m" ; break  }
+                    {$_ -gt 30} { "$([char]0x1b)[93m$($LastLogonDate)$([char]0x1b)[0m" ; break  }
+                    default { "$([char]0x1b)[32m$($LastLogonDate)$([char]0x1b)[0m" }
+                  }
+                }
+                else
+                {
+                  $_.LastLogonDate
+                }  
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <Label>Name</Label>
+                <PropertyName>Name</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>ObjectClass</Label>
+                <PropertyName>ObjectClass</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>ObjectGUID</Label>
+                <PropertyName>ObjectGUID</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>PasswordLastSet</Label>
+                <ScriptBlock>
+                if ($host.name -eq 'ConsoleHost') {
+                  $PasswordLastSet = $_.PasswordLastSet
+                  switch ((New-TimeSpan -Start $($PasswordLastSet) -End ([datetime]::Now)).Days) {
+                    {$_ -gt 120} { "$([char]0x1b)[91m$($PasswordLastSet)$([char]0x1b)[0m" ; break  }
+                    {$_ -gt 60} { "$([char]0x1b)[93m$($PasswordLastSet)$([char]0x1b)[0m" ; break  }
+                    default { "$([char]0x1b)[32m$($PasswordLastSet)$([char]0x1b)[0m" }
+                  }
+                }
+                else
+                {
+                  $_.PasswordLastSet
+                }
+                </ScriptBlock> 
+              </ListItem>
+              <ListItem>
+                <Label>SamAccountName</Label>
+                <PropertyName>SamAccountName</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>SID</Label>
+                <PropertyName>SID</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>Surname</Label>
+                <PropertyName>Surname</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>UserPrincipalName</Label>
+                <PropertyName>UserPrincipalName</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>PropertyNames</Label>
+                <PropertyName>PropertyNames</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>AddedProperties</Label>
+                <PropertyName>AddedProperties</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>RemovedProperties</Label>
+                <PropertyName>RemovedProperties</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>ModifiedProperties</Label>
+                <PropertyName>ModifiedProperties</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>PropertyCount</Label>
+                <PropertyName>PropertyCount</PropertyName>
+              </ListItem>
+            </ListItems>
+          </ListEntry>
+        </ListEntries>
+      </ListControl>
+    </View>
+  </ViewDefinitions>
+</Configuration>

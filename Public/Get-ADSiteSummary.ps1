@@ -7,7 +7,7 @@
         [string]$Name,
         [Parameter(HelpMessage = "Specify a domain controller to query.")]
         [alias("dc", "domaincontroller")]
-        [string]$Server,
+        [string]$Server = $env:USERDNSDOMAIN,
         [Parameter(HelpMessage = "Specify an alternate credential.")]
         [alias("RunAs")]
         [PSCredential]$Credential

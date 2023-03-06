@@ -1,0 +1,306 @@
+<!--
+Format type data generated 01/24/2023 14:34:04 by D12\KM5078
+
+This file was created using the New-PSFormatXML command that is part
+of the PSScriptTools module.
+
+https://github.com/jdhitsolutions/PSScriptTools
+-->
+<Configuration>
+  <ViewDefinitions>
+    <View>
+      <!--Created 01/24/2023 14:34:04 by D12\KM5078-->
+      <Name>default</Name>
+      <ViewSelectedBy>
+        <TypeName>ADUserInfo</TypeName>
+      </ViewSelectedBy>
+      <ListControl>
+        <ListEntries>
+          <ListEntry>
+            <ListItems>
+              <!--
+            By default the entries use property names, but you can replace them with scriptblocks.
+            <ScriptBlock>$_.foo /1mb -as [int]</ScriptBlock>
+              -->
+              <ListItem>
+                <Label>SamAccountName</Label>
+                <PropertyName>SamAccountName</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>Name</Label>
+                <PropertyName>Name</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>UPN</Label>
+                <PropertyName>UPN</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>Description</Label>
+                <PropertyName>Description</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>OU</Label>
+                <PropertyName>OU</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>Enabled</Label>
+                <ScriptBlock>
+                if ($host.name -eq 'ConsoleHost') {
+                  if ($_.Enabled)
+                  {
+                    "$([char]0x1b)[32m$($_.Enabled)$([char]0x1b)[0m"
+                  }
+                  else
+                  {
+                    "$([char]0x1b)[91m$($_.Enabled)$([char]0x1b)[0m" 
+                  }
+                }
+                else
+                {
+                  $_.Enabled
+                } 
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <Label>LockedOut</Label>
+                <PropertyName>LockedOut</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>LastLogonDate</Label>
+                <ScriptBlock>
+                if ($host.name -eq 'ConsoleHost') {
+                  $LastLogonDate = $_.LastLogonDate
+                  switch ((New-TimeSpan -Start $($LastLogonDate) -End ([datetime]::Now)).Days) {
+                    {$_ -gt 90} { "$([char]0x1b)[91m$($LastLogonDate)$([char]0x1b)[0m" ; break  }
+                    {$_ -gt 30} { "$([char]0x1b)[93m$($LastLogonDate)$([char]0x1b)[0m" ; break  }
+                    default { "$([char]0x1b)[32m$($LastLogonDate)$([char]0x1b)[0m" }
+                  }
+                }
+                else
+                {
+                  $_.LastLogonDate
+                }  
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <Label>PasswordLastSet</Label>
+                <ScriptBlock>
+                if ($host.name -eq 'ConsoleHost') {
+                  $PasswordLastSet = $_.PasswordLastSet
+                  switch ((New-TimeSpan -Start $($PasswordLastSet) -End ([datetime]::Now)).Days) {
+                    {$_ -gt 120} { "$([char]0x1b)[91m$($PasswordLastSet)$([char]0x1b)[0m" ; break  }
+                    {$_ -gt 60} { "$([char]0x1b)[93m$($PasswordLastSet)$([char]0x1b)[0m" ; break  }
+                    default { "$([char]0x1b)[32m$($PasswordLastSet)$([char]0x1b)[0m" }
+                  }
+                }
+                else
+                {
+                  $_.PasswordLastSet
+                }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <Label>PasswordExpiration</Label>
+                <ScriptBlock>
+                if ($host.name -eq 'ConsoleHost') {
+                  $PasswordExpiration = $_.PasswordExpiration
+                  switch ((New-TimeSpan -Start $($PasswordExpiration) -End ([datetime]::Now)).Days) {
+                    {$_ -ge 0} { "$([char]0x1b)[91m$($PasswordExpiration)$([char]0x1b)[0m" ; break  }
+                    {$_ -gt -10} { "$([char]0x1b)[93m$($PasswordLastSet)$([char]0x1b)[0m" ; break  }
+                    default { "$([char]0x1b)[32m$($PasswordLastSet)$([char]0x1b)[0m" }
+                  }
+                }
+                else
+                {
+                  $_.PasswordExpiration
+                }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <Label>Created</Label>
+                <PropertyName>Created</PropertyName>
+              </ListItem>
+              <ListItem>
+                <Label>SID</Label>
+                <PropertyName>SID</PropertyName>
+              </ListItem>
+            </ListItems>
+          </ListEntry>
+        </ListEntries>
+      </ListControl>
+    </View>
+    <View>
+      <!--Created 01/24/2023 14:34:11 by D12\KM5078-->
+      <Name>default</Name>
+      <ViewSelectedBy>
+        <TypeName>ADUserInfo</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <!--Delete the AutoSize node if you want to use the defined widths.-->
+        <AutoSize />
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>SamAccountName</Label>
+            <Width>17</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Name</Label>
+            <Width>17</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>UPN</Label>
+            <Width>19</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Description</Label>
+            <Width>18</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>OU</Label>
+            <Width>36</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Enabled</Label>
+            <Width>10</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>LockedOut</Label>
+            <Width>12</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>LastLogonDate</Label>
+            <Width>22</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>PasswordLastSet</Label>
+            <Width>22</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>PasswordExpiration</Label>
+            <Width>22</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Created</Label>
+            <Width>22</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>SID</Label>
+            <Width>48</Width>
+            <Alignment>left</Alignment>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <!--
+            By default the entries use property names, but you can replace them with scriptblocks.
+            <ScriptBlock>$_.foo /1mb -as [int]</ScriptBlock>
+-->
+              <TableColumnItem>
+                <PropertyName>SamAccountName</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>UPN</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Description</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>OU</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>
+                if ($host.name -eq 'ConsoleHost') {
+                  if ($_.Enabled)
+                  {
+                    "$([char]0x1b)[32m$($_.Enabled)$([char]0x1b)[0m"
+                  }
+                  else
+                  {
+                    "$([char]0x1b)[91m$($_.Enabled)$([char]0x1b)[0m" 
+                  }
+                }
+                else
+                {
+                  $_.Enabled
+                } 
+                </ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>LockedOut</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>
+                if ($host.name -eq 'ConsoleHost') {
+                  $LastLogonDate = $_.LastLogonDate
+                  switch ((New-TimeSpan -Start $($LastLogonDate) -End ([datetime]::Now)).Days) {
+                    {$_ -gt 90} { "$([char]0x1b)[91m$($LastLogonDate)$([char]0x1b)[0m" ; break  }
+                    {$_ -gt 30} { "$([char]0x1b)[93m$($LastLogonDate)$([char]0x1b)[0m" ; break  }
+                    default { "$([char]0x1b)[32m$($LastLogonDate)$([char]0x1b)[0m" }
+                  }
+                }
+                else
+                {
+                  $_.LastLogonDate
+                }  
+                </ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>
+                if ($host.name -eq 'ConsoleHost') {
+                  $PasswordLastSet = $_.PasswordLastSet
+                  switch ((New-TimeSpan -Start $($PasswordLastSet) -End ([datetime]::Now)).Days) {
+                    {$_ -gt 120} { "$([char]0x1b)[91m$($PasswordLastSet)$([char]0x1b)[0m" ; break  }
+                    {$_ -gt 60} { "$([char]0x1b)[93m$($PasswordLastSet)$([char]0x1b)[0m" ; break  }
+                    default { "$([char]0x1b)[32m$($PasswordLastSet)$([char]0x1b)[0m" }
+                  }
+                }
+                else
+                {
+                  $_.PasswordLastSet
+                }
+                </ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>
+                if ($host.name -eq 'ConsoleHost') {
+                  $PasswordExpiration = $_.PasswordExpiration
+                  switch ((New-TimeSpan -Start $($PasswordExpiration) -End ([datetime]::Now)).Days) {
+                    {$_ -ge 0} { "$([char]0x1b)[91m$($PasswordExpiration)$([char]0x1b)[0m" ; break  }
+                    {$_ -gt -10} { "$([char]0x1b)[93m$($PasswordLastSet)$([char]0x1b)[0m" ; break  }
+                    default { "$([char]0x1b)[32m$($PasswordLastSet)$([char]0x1b)[0m" }
+                  }
+                }
+                else
+                {
+                  $_.PasswordExpiration
+                }
+                </ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Created</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>SID</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+  </ViewDefinitions>
+</Configuration>

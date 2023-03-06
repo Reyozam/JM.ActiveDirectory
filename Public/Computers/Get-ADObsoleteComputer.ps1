@@ -16,16 +16,15 @@
     [CmdletBinding()]
     param (
         # Password age in days.
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [int16]$PasswordOlderThan,
         [Parameter(Mandatory = $false)]
-        [string]$Server
+        [int16]$PasswordOlderThan = 30,
+        [Parameter(Mandatory = $false)]
+        [string]$Server = $env:USERDNSDOMAIN
     )
     process
     {
         $PasswordDate = (Get-Date).AddDays(-$PasswordOlderThan).ToFileTime()
-        $Computerlist = (Get-ADComputer -filter { Enabled -eq $true } -Properties * -server $server | Where-Object { $_.PwdLastSet -le $PasswordDate })
+        $Computerlist = (Get-ADComputer -filter { Enabled -eq $true } -Properties LastLogon,PasswordLastSet -server $server | Where-Object { $_.PwdLastSet -le $PasswordDate })
 
         $Computerlist | Select-Object Name, PasswordLastSet
 

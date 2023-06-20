@@ -18,20 +18,21 @@ function Get-ADEmptyGroups
         [string]$SearchScope
     )
 
-         
+    $ExclusionOU = "CN=Builtin,DC=gsy,DC=ad,DC=gaselys,DC=com|CN=Users,DC=gsy,DC=ad,DC=gaselys,DC=com"
+
     Try {
-        If($SearchScope) 
+        If($SearchScope)
         {
           Write-Verbose "Lookup empty groups under $SearchScope ..."
-          Get-ADGroup -Filter { Members -notlike "*" } -SearchBase $SearchScope -Server $Server | Select-Object Name, GroupCategory, DistinguishedName
-        } 
-        Else 
+          Get-ADGroup -Filter { Members -notlike "*" } -SearchBase $SearchScope -Server $Server -Properties grouptype | Where-Object {$_.grouptype -ne -2147483643 -and $_.DistinguishedName -notmatch $ExclusionOU  } | Select-Object Name, GroupCategory, DistinguishedName
+        }
+        Else
         {
           Write-Verbose "Lookup empty groups on all $Server domain ..."
-          Get-ADGroup -Filter { Members -notlike "*" } -Server $Server | Select-Object Name, GroupCategory, DistinguishedName
+          Get-ADGroup -Filter { Members -notlike "*" } -Server $Server -Properties grouptype | Where-Object { $_.grouptype -ne -2147483643 -and $_.DistinguishedName -notmatch $ExclusionOU }  | Select-Object Name, GroupCategory, DistinguishedName
         }
       }
-  
+
       Catch {
         Write-Error "$($_.Exception.Message)"
         Break

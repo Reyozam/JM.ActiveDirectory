@@ -4,7 +4,13 @@
     Param (
         [parameter(Mandatory = $True, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $True)][Alias('Name')][string]$Identity,
         [Parameter(Mandatory = $false)][switch]$Detailed,
-        [Parameter(Mandatory = $false)][string]$Server = $env:USERDNSDOMAIN
+        [Parameter(Mandatory = $false)][string]$Server = $env:USERDNSDOMAIN,
+        # Specifies the user account credentials to use when performing this task.
+        [Parameter()]
+        [ValidateNotNull()]
+        [System.Management.Automation.PSCredential]
+        [System.Management.Automation.Credential()]
+        $Credential = [System.Management.Automation.PSCredential]::Empty
 
     )
     begin

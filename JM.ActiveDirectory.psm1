@@ -1,5 +1,6 @@
+$WarningPreference = "SilentlyContinue"
 if ($myinvocation.line -match "-verbose") {
-    $VerbosePreference = "continue"
+    $VerbosePreference = "Continue"
 }
 
 $Script:ModuleRoot = $PSScriptRoot

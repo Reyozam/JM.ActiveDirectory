@@ -20,12 +20,13 @@
 
     [CmdletBinding()]
     param (
-        [Parameter()][string]$Server = $env:USERDNSDOMAIN
+        [Parameter()][string]$Server = $env:USERDNSDOMAIN,
+        [switch]$ASObject
     )
 
     $Properties = @(
         @{Name = 'Name'; Expression = {
-                if ($host.name -eq 'ConsoleHost')
+                if ($host.name -eq 'ConsoleHost' -and $ASObject -eq $false)
                 {
                     if ($_.OperationMasterRoles -contains 'PDCEmulator') { "$([char]0x1b)[93m$($_.Name)$([char]0x1b)[0m" }
                     else { $_.Name }

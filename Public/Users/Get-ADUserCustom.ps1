@@ -23,12 +23,13 @@
             'LastLogonDate',
             'PasswordLastSet',
             'PasswordNeverExpires',
-            'msDS-UserPasswordExpiryTimeComputed'
+            'msDS-UserPasswordExpiryTimeComputed',
+            'Modified'
         )
 
         $SelectProperties = @(
-            'SamAccountName',
             'Name',
+            'SamAccountName',
             @{Name = 'Enabled'; Expression = {
                     if ($host.name -eq 'ConsoleHost')
                     {
@@ -117,7 +118,26 @@
                     }
                 }
             },
-            'Created'
+            @{Name = 'PasswordNeverExpires'; Expression = {
+                if ($host.name -eq 'ConsoleHost')
+                {
+                    if ($_.PasswordNeverExpires)
+                    {
+                        "$([char]0x1b)[33m$($_.PasswordNeverExpires)$([char]0x1b)[0m"
+                    }
+                    else
+                    {
+                        "$([char]0x1b)[32m$($_.PasswordNeverExpires)$([char]0x1b)[0m"
+                    }
+                }
+                else
+                {
+                    $_.PasswordNeverExpires
+                }
+            }
+        },
+            'Created',
+            'Modified'
         )
 
         $DetailedProperties = @(

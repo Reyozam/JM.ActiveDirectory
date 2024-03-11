@@ -1,4 +1,4 @@
-﻿function Check-UserInGroup
+﻿function Test-UserInGroup
 {
     [CmdletBinding()]
     param (
